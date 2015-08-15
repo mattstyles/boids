@@ -1,0 +1,21 @@
+{
+  "name": "boids",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Testing a maths utility library with a quick round of boids",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prebuild": "rm -rf dist && mkdir dist",
+    "build": "browserify -t babelify index.js > dist/index.js"
+  },
+  "author": "Matt Styles",
+  "license": "ISC",
+  "devDependencies": {
+    "babelify": "^6.1.3",
+    "browserify": "^11.0.1"
+  },
+  "dependencies": {
+    "core-js": "^1.0.1"
+  }
+}
