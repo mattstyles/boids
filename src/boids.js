@@ -1,5 +1,5 @@
 
-import { Vector2, toRadians } from 'mathutil'
+import { Vector2, toRadians, lerp } from 'mathutil'
 
 import ctx from './canvas'
 import CONSTANTS from './constants'
@@ -10,7 +10,8 @@ class Boid {
     constructor( opts ) {
         opts = Object.assign({
             x: CONSTANTS.CANVAS_WIDTH / 2,
-            y: CONSTANTS.CANVAS_HEIGHT / 2
+            y: CONSTANTS.CANVAS_HEIGHT / 2,
+            color: '#9b59b6'
         }, opts )
 
         this.pos = new Vector2( opts.x, opts.y )
@@ -18,7 +19,10 @@ class Boid {
         this.acceleration = 0
         this.angular = 0
 
+        this.leader = null
+
         this.size = 4
+        this.color = opts.color
     }
     // for debug
     get position() {
@@ -34,8 +38,12 @@ class Boid {
             .join( ' ' )
     }
 
+    setLeader( lead ) {
+        this.leader = lead
+    }
+
     render() {
-        ctx.fillStyle = '#9b59b6'
+        ctx.fillStyle = this.color
         ctx.strokeStyle = '#404040'
         ctx.lineWidth = 2
 
@@ -152,6 +160,10 @@ class Boids {
     registerLeader( entity ) {
         this.leader = entity
         this.entities.push( entity )
+
+        this.entities.forEach( boid => {
+            boid.setLeader( entity )
+        })
     }
 
     update( delta ) {
@@ -159,11 +171,27 @@ class Boids {
             e.update( delta )
         })
     }
+
+    render() {
+        this.entities.forEach( e => {
+            e.render()
+        })
+    }
 }
 
 
-var leader = new Leader()
+var leader = new Leader({
+    color: '#F22613'
+})
 var boids = new Boids()
+let i = CONSTANTS.NUM_BOIDS
+let length = Math.max( CONSTANTS.CANVAS_WIDTH, CONSTANTS.CANVAS_HEIGHT ) * .1
+while( i-- >= 0 ) {
+    boids.entities.push( new Boid({
+        x: ( CONSTANTS.CANVAS_WIDTH / 2 ) + lerp( Math.random(), -length, length ),
+        y: ( CONSTANTS.CANVAS_HEIGHT / 2 ) + lerp( Math.random(), -length, length )
+    }))
+}
 boids.registerLeader( leader )
 
 export default {

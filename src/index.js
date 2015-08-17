@@ -13,7 +13,7 @@ import { leader, boids } from './boids'
 function render() {
     ctx.clearRect( 0, 0, CONSTANTS.CANVAS_WIDTH, CONSTANTS.CANVAS_HEIGHT )
 
-    leader.render()
+    boids.render()
 }
 
 function onTick( delta ) {
