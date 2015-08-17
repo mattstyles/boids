@@ -5,6 +5,7 @@ import raf from 'raf'
 import './input'
 import ctx from './canvas'
 import CONSTANTS from './constants'
+import stats from './fps'
 
 import { leader } from './boids'
 
@@ -15,8 +16,10 @@ function render() {
 }
 
 function onTick() {
+    stats.begin()
     render()
 
+    stats.end()
     raf( onTick )
 }
 
