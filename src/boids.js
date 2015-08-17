@@ -53,25 +53,7 @@ class Boid {
     }
 
     update( delta ) {
-        // Apply friction to slow us down
-        this.acceleration *= .95
-
-        // Apply shield to stop us if we're close to stopping
-        if ( this.acceleration > -1 && this.acceleration < 1 ) {
-            this.acceleration = 0
-        }
-
-        this.pos = this.pos.add( this.dir.scalar( this.acceleration ) )
-
-        // Handle rotation
-        this.angular *= .9
-        if ( this.angular > -1 && this.angular < 1 ) {
-            this.angular = 0
-        }
-
-        if ( this.angular ) {
-            this.dir = this.dir.rotate( toRadians( this.angular ) )
-        }
+        // For now, just try to have them follow the leader
     }
 }
 
@@ -83,6 +65,30 @@ class Leader extends Boid {
         }, opts )
 
         super( opts )
+    }
+
+    update( delta ) {
+        // Apply friction to slow us down
+        this.acceleration *= .95
+
+        // Apply shield to stop us if we're close to stopping
+        if ( this.acceleration > -1 && this.acceleration < 1 ) {
+            this.acceleration = 0
+        }
+
+        if ( this.acceleration ) {
+            this.pos = this.pos.add( this.dir.scalar( this.acceleration ) )
+        }
+
+        // Handle rotation
+        this.angular *= .9
+        if ( this.angular > -1 && this.angular < 1 ) {
+            this.angular = 0
+        }
+
+        if ( this.angular ) {
+            this.dir = this.dir.rotate( toRadians( this.angular ) )
+        }
     }
 
 
