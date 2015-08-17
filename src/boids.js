@@ -15,6 +15,7 @@ class Boid {
 
         this.pos = new Vector2( opts.x, opts.y )
         this.dir = new Vector2( 0, 1 )
+        this.acceleration = 0
 
         this.size = 4
     }
@@ -37,12 +38,30 @@ class Boid {
         ctx.stroke()
     }
 
+    update( delta ) {
+        // Apply friction to slow us down
+        this.acceleration /= 1.2
+
+        // Apply shield to stop us if we're close to stopping
+        if ( this.acceleration < 1 ) {
+            this.acceleration = 0
+        }
+
+        this.pos = this.pos.add( this.dir.scalar( this.acceleration ) )
+    }
+
     forward = () => {
-        this.pos = this.pos.add( this.dir.scalar( 5 ) )
+        if ( this.acceleration < 1 ) {
+            this.acceleration = 1
+        }
+
+        if ( this.acceleration < 5 ) {
+            this.acceleration *= 1.5
+        }
     }
 
     backward = () => {
-        this.pos = this.pos.add( this.dir.scalar( -5 ) )
+
     }
 
     left = () => {
@@ -63,6 +82,13 @@ class Boids {
 
     registerLeader( entity ) {
         this.leader = entity
+        this.entities.push( entity )
+    }
+
+    update( delta ) {
+        this.entities.forEach( e => {
+            e.update( delta )
+        })
     }
 }
 

@@ -7,7 +7,7 @@ import ctx from './canvas'
 import CONSTANTS from './constants'
 import stats from './fps'
 
-import { leader } from './boids'
+import { leader, boids } from './boids'
 
 function render() {
     ctx.clearRect( 0, 0, CONSTANTS.CANVAS_WIDTH, CONSTANTS.CANVAS_HEIGHT )
@@ -15,8 +15,10 @@ function render() {
     leader.render()
 }
 
-function onTick() {
+function onTick( delta ) {
     stats.begin()
+
+    boids.update( delta )
     render()
 
     stats.end()
