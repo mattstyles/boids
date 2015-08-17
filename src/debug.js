@@ -50,5 +50,9 @@ debug.addProp({
     name: 'Acceleration',
     dataname: 'acceleration'
 })
+debug.addProp({
+    name: 'Angular',
+    dataname: 'angular'
+})
 
 export default debug

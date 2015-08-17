@@ -16,10 +16,10 @@ class Boid {
         this.pos = new Vector2( opts.x, opts.y )
         this.dir = new Vector2( 0, 1 )
         this.acceleration = 0
+        this.angular = 0
 
         this.size = 4
     }
-
     // for debug
     get position() {
         return this.pos
@@ -57,33 +57,66 @@ class Boid {
         this.acceleration *= .95
 
         // Apply shield to stop us if we're close to stopping
-        if ( this.acceleration < 1 ) {
+        if ( this.acceleration > -1 && this.acceleration < 1 ) {
             this.acceleration = 0
         }
 
         this.pos = this.pos.add( this.dir.scalar( this.acceleration ) )
+
+        // Handle rotation
+        this.angular *= .9
+        if ( this.angular > -1 && this.angular < 1 ) {
+            this.angular = 0
+        }
+
+        if ( this.angular ) {
+            this.dir = this.dir.rotate( toRadians( this.angular ) )
+        }
     }
+}
+
+class Leader extends Boid {
+    constructor( opts ) {
+        opts = Object.assign({
+            x: CONSTANTS.CANVAS_WIDTH / 2,
+            y: CONSTANTS.CANVAS_HEIGHT / 2
+        }, opts )
+
+        super( opts )
+    }
+
 
     forward = () => {
         if ( this.acceleration < 1 ) {
             this.acceleration = 1
         }
 
-        if ( this.acceleration < 5 ) {
+        if ( this.acceleration < 2.75 ) {
             this.acceleration *= 1.5
         }
     }
 
     backward = () => {
+        this.acceleration *= .85
 
+        if ( this.acceleration < .5 ) {
+            this.acceleration = -3
+        }
     }
 
     left = () => {
-        this.dir = this.dir.rotate( toRadians( -10 ) )
+        if ( this.angular <= -10 ) {
+            return
+        }
+
+        this.angular -= 2
     }
 
     right = () => {
-        this.dir = this.dir.rotate( toRadians( 10 ) )
+        if ( this.angular >= 10 ) {
+            return
+        }
+        this.angular += 2
     }
 }
 
@@ -107,7 +140,7 @@ class Boids {
 }
 
 
-var leader = new Boid()
+var leader = new Leader()
 var boids = new Boids()
 boids.registerLeader( leader )
 
