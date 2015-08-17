@@ -11,3 +11,5 @@ document.body.appendChild( canvas )
 
 let ctx = canvas.getContext( '2d' )
 ctx.scale( window.devicePixelRatio, window.devicePixelRatio )
+
+export default ctx
