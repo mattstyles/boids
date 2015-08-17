@@ -2,6 +2,7 @@
 import 'core-js'
 import raf from 'raf'
 
+import debug from './debug'
 import './input'
 import ctx from './canvas'
 import CONSTANTS from './constants'
@@ -19,6 +20,7 @@ function onTick( delta ) {
     stats.begin()
 
     boids.update( delta )
+    debug.render()
     render()
 
     stats.end()

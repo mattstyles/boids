@@ -20,6 +20,20 @@ class Boid {
         this.size = 4
     }
 
+    // for debug
+    get position() {
+        return this.pos
+            .position()
+            .map( val => val.toFixed( 2 ) )
+            .join( ' ' )
+    }
+    get direction() {
+        return this.dir
+            .position()
+            .map( val => val.toFixed( 2 ) )
+            .join( ' ' )
+    }
+
     render() {
         ctx.fillStyle = '#9b59b6'
         ctx.strokeStyle = '#404040'
@@ -40,7 +54,7 @@ class Boid {
 
     update( delta ) {
         // Apply friction to slow us down
-        this.acceleration /= 1.2
+        this.acceleration *= .95
 
         // Apply shield to stop us if we're close to stopping
         if ( this.acceleration < 1 ) {
