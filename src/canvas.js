@@ -5,7 +5,7 @@ let canvas = document.createElement( 'canvas' )
 canvas.width = CONSTANTS.CANVAS_WIDTH * window.devicePixelRatio
 canvas.height = CONSTANTS.CANVAS_HEIGHT * window.devicePixelRatio
 canvas.style.width = CONSTANTS.CANVAS_WIDTH + 'px'
-canvas.style.height = CONSTANTS.CANVAS_HEIGHT + 'px'
+canvas.style.height = CONSTANTS.CANVAS_HEIGHT - 4 + 'px'
 
 document.body.appendChild( canvas )
 

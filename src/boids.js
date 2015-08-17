@@ -54,6 +54,33 @@ class Boid {
 
     update( delta ) {
         // For now, just try to have them follow the leader
+
+        // Now apply forces
+        this.applyForces()
+    }
+
+    applyForces() {
+        // Apply friction to slow us down
+        this.acceleration *= .95
+
+        // Apply shield to stop us if we're close to stopping
+        if ( this.acceleration > -.25 && this.acceleration < .5 ) {
+            this.acceleration = 0
+        }
+
+        if ( this.acceleration ) {
+            this.pos = this.pos.add( this.dir.scalar( this.acceleration ) )
+        }
+
+        // Handle rotation
+        this.angular *= .9
+        if ( this.angular > -.75 && this.angular < .75 ) {
+            this.angular = 0
+        }
+
+        if ( this.angular ) {
+            this.dir = this.dir.rotate( toRadians( this.angular ) )
+        }
     }
 }
 
@@ -68,33 +95,13 @@ class Leader extends Boid {
     }
 
     update( delta ) {
-        // Apply friction to slow us down
-        this.acceleration *= .95
-
-        // Apply shield to stop us if we're close to stopping
-        if ( this.acceleration > -1 && this.acceleration < 1 ) {
-            this.acceleration = 0
-        }
-
-        if ( this.acceleration ) {
-            this.pos = this.pos.add( this.dir.scalar( this.acceleration ) )
-        }
-
-        // Handle rotation
-        this.angular *= .9
-        if ( this.angular > -1 && this.angular < 1 ) {
-            this.angular = 0
-        }
-
-        if ( this.angular ) {
-            this.dir = this.dir.rotate( toRadians( this.angular ) )
-        }
+        this.applyForces()
     }
 
 
     forward = () => {
-        if ( this.acceleration < 1 ) {
-            this.acceleration = 1
+        if ( this.acceleration < .5 ) {
+            this.acceleration = .5
         }
 
         if ( this.acceleration < 2.75 ) {
@@ -105,24 +112,33 @@ class Leader extends Boid {
     backward = () => {
         this.acceleration *= .85
 
-        if ( this.acceleration < .5 ) {
-            this.acceleration = -3
+        if ( this.acceleration > .5 ) {
+            this.acceleration *= .7
+            return
+        }
+
+        if ( this.acceleration === 0 ) {
+            this.acceleration = -.5
+        }
+
+        if ( this.acceleration > -2 ) {
+            this.acceleration *= 1.25
         }
     }
 
     left = () => {
-        if ( this.angular <= -10 ) {
+        if ( this.angular <= -4 ) {
             return
         }
 
-        this.angular -= 2
+        this.angular -= 1.2
     }
 
     right = () => {
-        if ( this.angular >= 10 ) {
+        if ( this.angular >= 4 ) {
             return
         }
-        this.angular += 2
+        this.angular += 1.2
     }
 }
 
