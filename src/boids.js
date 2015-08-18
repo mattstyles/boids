@@ -17,7 +17,7 @@ class Boid {
         }, opts )
 
         this.pos = new Vector2( opts.x, opts.y )
-        this.dir = new Vector2( 0, 1 )
+        this.dir = new Vector2( Math.random(), Math.random() ).unit()
         this.acceleration = 0
         this.angular = 0
 
@@ -73,7 +73,7 @@ class Boid {
         // For now, just try to have them follow the leader
         let angle = this.leader.dir.cross( this.dir )
 
-        if ( angle < 0.2 ) {
+        if ( angle < -0.2 ) {
             this.right()
         }
         if ( angle > 0.2 ) {
