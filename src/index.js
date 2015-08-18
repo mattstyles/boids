@@ -32,3 +32,4 @@ raf( onTick )
 
 
 window.leader = leader
+window.boids = boids

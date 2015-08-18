@@ -11,7 +11,9 @@ class Boid {
         opts = Object.assign({
             x: CONSTANTS.CANVAS_WIDTH / 2,
             y: CONSTANTS.CANVAS_HEIGHT / 2,
-            color: '#9b59b6'
+            color: '#9b59b6',
+            accelerationForce: lerp( Math.random(), 1.1, 1.5 ),
+            angularForce: lerp( Math.random(), .9, 1.2 )
         }, opts )
 
         this.pos = new Vector2( opts.x, opts.y )
@@ -23,6 +25,8 @@ class Boid {
 
         this.size = 4
         this.color = opts.color
+        this.accelerationForce = opts.accelerationForce
+        this.angularForce = opts.angularForce
     }
     // for debug
     get position() {
@@ -60,8 +64,21 @@ class Boid {
         ctx.stroke()
     }
 
-    update( delta ) {
+    update() {
+        // Without a leader the boids are useless!
+        if ( !this.leader ) {
+            return
+        }
+
         // For now, just try to have them follow the leader
+        let angle = this.leader.dir.cross( this.dir )
+
+        if ( angle < 0.2 ) {
+            this.right()
+        }
+        if ( angle > 0.2 ) {
+            this.left()
+        }
 
         // Now apply forces
         this.applyForces()
@@ -90,6 +107,48 @@ class Boid {
             this.dir = this.dir.rotate( toRadians( this.angular ) )
         }
     }
+
+    forward = () => {
+        if ( this.acceleration < .5 ) {
+            this.acceleration = .5
+        }
+
+        if ( this.acceleration < 2.75 ) {
+            this.acceleration *= this.accelerationForce
+        }
+    }
+
+    backward = () => {
+        this.acceleration *= .85
+
+        if ( this.acceleration > .5 ) {
+            this.acceleration *= this.accelerationForce / 2
+            return
+        }
+
+        if ( this.acceleration === 0 ) {
+            this.acceleration = -.5
+        }
+
+        if ( this.acceleration > -2 ) {
+            this.acceleration *= this.accelerationForce * .75
+        }
+    }
+
+    left = () => {
+        if ( this.angular <= -4 ) {
+            return
+        }
+
+        this.angular -= this.angularForce
+    }
+
+    right = () => {
+        if ( this.angular >= 4 ) {
+            return
+        }
+        this.angular += this.angularForce
+    }
 }
 
 class Leader extends Boid {
@@ -102,52 +161,10 @@ class Leader extends Boid {
         super( opts )
     }
 
-    update( delta ) {
+    update() {
         this.applyForces()
     }
 
-
-    forward = () => {
-        if ( this.acceleration < .5 ) {
-            this.acceleration = .5
-        }
-
-        if ( this.acceleration < 2.75 ) {
-            this.acceleration *= 1.5
-        }
-    }
-
-    backward = () => {
-        this.acceleration *= .85
-
-        if ( this.acceleration > .5 ) {
-            this.acceleration *= .7
-            return
-        }
-
-        if ( this.acceleration === 0 ) {
-            this.acceleration = -.5
-        }
-
-        if ( this.acceleration > -2 ) {
-            this.acceleration *= 1.25
-        }
-    }
-
-    left = () => {
-        if ( this.angular <= -4 ) {
-            return
-        }
-
-        this.angular -= 1.2
-    }
-
-    right = () => {
-        if ( this.angular >= 4 ) {
-            return
-        }
-        this.angular += 1.2
-    }
 }
 
 
@@ -181,7 +198,9 @@ class Boids {
 
 
 var leader = new Leader({
-    color: '#F22613'
+    color: '#F22613',
+    acclerationForce: 1.5,
+    angularForce: 1.2
 })
 var boids = new Boids()
 let i = CONSTANTS.NUM_BOIDS
