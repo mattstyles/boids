@@ -12,7 +12,7 @@ class Boid {
             x: CONSTANTS.CANVAS_WIDTH / 2,
             y: CONSTANTS.CANVAS_HEIGHT / 2,
             color: '#9b59b6',
-            accelerationForce: lerp( Math.random(), 1.1, 1.5 ),
+            accelerationForce: lerp( Math.random(), 1.1, 1.35 ),
             angularForce: lerp( Math.random(), .9, 1.2 )
         }, opts )
 
@@ -71,6 +71,7 @@ class Boid {
         }
 
         // For now, just try to have them follow the leader
+        // rotation matching
         let angle = this.leader.dir.cross( this.dir )
 
         if ( angle < -0.2 ) {
@@ -78,6 +79,11 @@ class Boid {
         }
         if ( angle > 0.2 ) {
             this.left()
+        }
+
+        // acceleration matching
+        if ( this.leader.acceleration > 1 ) {
+            this.forward()
         }
 
         // Now apply forces
