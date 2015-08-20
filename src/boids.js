@@ -8,10 +8,19 @@ const PI2 = Math.PI * 2
 
 class Boid {
     constructor( opts ) {
+        let defColorLerp = Math.random()
+        let col = [
+            ~~lerp( defColorLerp, 247, 207 ),
+            ~~lerp( defColorLerp, 202, 0 ),
+            ~~lerp( defColorLerp, 24, 15 ),
+            lerp( defColorLerp, .85, .4 )
+        ]
+        let colStr = 'rgba(' + col.join(',') + ') '
+
         opts = Object.assign({
             x: CONSTANTS.CANVAS_WIDTH / 2,
             y: CONSTANTS.CANVAS_HEIGHT / 2,
-            color: '#9b59b6',
+            color: colStr,
             accelerationForce: lerp( Math.random(), 1.1, 1.35 ),
             angularForce: lerp( Math.random(), .9, 1.2 )
         }, opts )
@@ -23,7 +32,7 @@ class Boid {
 
         this.leader = null
 
-        this.size = 4
+        this.size = 1 + ( Math.random() * 2 )
         this.color = opts.color
         this.accelerationForce = opts.accelerationForce
         this.angularForce = opts.angularForce
@@ -52,16 +61,16 @@ class Boid {
         ctx.lineWidth = 2
 
         // Render facing vector
-        ctx.beginPath()
-        ctx.moveTo( ...this.pos.position() )
-        ctx.lineTo( ...this.pos.add( this.dir.scalar( 10 ) ).position() )
-        ctx.stroke()
+        // ctx.beginPath()
+        // ctx.moveTo( ...this.pos.position() )
+        // ctx.lineTo( ...this.pos.add( this.dir.scalar( 10 ) ).position() )
+        // ctx.stroke()
 
         // Render shape
         ctx.beginPath()
         ctx.arc( ...this.pos.position(), this.size, 0, PI2, false )
         ctx.fill()
-        ctx.stroke()
+        // ctx.stroke()
     }
 
     update() {

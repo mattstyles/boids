@@ -5,8 +5,8 @@ const CONSTANTS = {
 
     INPUT_THROTTLE: 100,
 
-    NUM_BOIDS: 5,
-    BOID_PROXIMITY: 30
+    NUM_BOIDS: 755,
+    BOID_PROXIMITY: 50
 }
 
 export default CONSTANTS
