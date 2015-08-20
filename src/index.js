@@ -33,3 +33,6 @@ raf( onTick )
 
 window.leader = leader
 window.boids = boids
+window.b = boids.entities[ 1 ]
+
+window.b.color = '#28f84c'

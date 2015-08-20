@@ -70,24 +70,52 @@ class Boid {
             return
         }
 
-        // For now, just try to have them follow the leader
-        // rotation matching
-        let angle = this.leader.dir.cross( this.dir )
-
-        if ( angle < -0.2 ) {
-            this.right()
-        }
-        if ( angle > 0.2 ) {
-            this.left()
-        }
-
         // acceleration matching
         if ( this.leader.acceleration > 1 ) {
             this.forward()
         }
 
-        // Now apply forces
-        this.applyForces()
+        // Within a certain distance and just match heading
+        if ( this.pos.distance( this.leader.pos ) < CONSTANTS.BOID_PROXIMITY ) {
+            let angle = this.leader.dir.cross( this.dir )
+
+            if ( angle < -0.2 ) {
+                this.right()
+            }
+            if ( angle > 0.2 ) {
+                this.left()
+            }
+
+            return
+        }
+
+        // If further out then turn to face the leader
+
+        // Handle in relation to leader position
+        let orientation = this.pos.sub( this.leader.pos ).unit().dot( this.dir )
+
+        // -1 is infront, 1 behind
+        if ( orientation > .5 ) {
+            this.backward()
+
+            // @TODO calc if left or right is closer
+            this.left()
+        }
+
+        if ( orientation < -.5 ) {
+            this.forward()
+        }
+
+        // If leader is to the left or right then turn
+        let ori = this.pos.sub( this.leader.pos ).unit().cross( this.dir )
+        if ( ori > .5 ) {
+            this.right()
+        }
+        if ( ori < -.5 ) {
+            this.left()
+        }
+
+        // Somewhere outside should apply these calculated forces
     }
 
     applyForces() {
@@ -168,7 +196,7 @@ class Leader extends Boid {
     }
 
     update() {
-        this.applyForces()
+        // noop, handles by user input
     }
 
 }
@@ -192,6 +220,7 @@ class Boids {
     update( delta ) {
         this.entities.forEach( e => {
             e.update( delta )
+            e.applyForces()
         })
     }
 
